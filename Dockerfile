@@ -3,7 +3,6 @@ WORKDIR /tmp
 COPY ./src ./src
 COPY ./pom.xml .
 RUN mvn package
-FROM adoptopenjdk/openjdk11:debianslim-jre
-COPY --from=builder /tmp/target/app.jar /app/app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+FROM tomcat:9.0.71-jdk11-temurin-focal
+ENV WAR_FILE /tmp/target/app.war
+COPY --from=builder ${WAR_FILE} /usr/local/tomcat/webapps/
